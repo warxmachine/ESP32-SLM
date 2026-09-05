@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+train/checkpoints/
+train/data/
+train/chat_corpus.txt
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.kaggle
+kaggle.json
