@@ -6,7 +6,7 @@ Always start with `you:` unless you are sending a chip command (`/why`, `/temp`,
 
 The Serial line `YOU:` is a **firmware label**. It is not the letters `you:` fed into the RNN.
 
-## Video
+## Good first prompts
 
 ```text
 you: what is the f-1

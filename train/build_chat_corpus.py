@@ -301,7 +301,11 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", type=Path, default=DATA)
     parser.add_argument("--out", type=Path, default=HERE / "chat_corpus.txt")
-    parser.add_argument("--skip-kaggle", action="store_true")
+    parser.add_argument(
+        "--skip-kaggle",
+        action="store_true",
+        help="no-op; hand facts are already the default (kept for old command lines)",
+    )
     parser.add_argument("--with-kaggle", action="store_true", help="mix CSV rows back in")
     parser.add_argument("--repeat", type=int, default=40)
     args = parser.parse_args()

@@ -1,6 +1,6 @@
 """Interactive serial chat with the ESP32 TinyLM.
 
-Close Arduino Serial Monitor first (only one program can own COM3).
+Close Arduino Serial Monitor first (only one program can own the serial port).
 
 Opening the port resets the board. Firmware boots with n unlimited and why off.
 """

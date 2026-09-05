@@ -4,7 +4,7 @@
 
 - ESP32-WROOM-32 DevKit (4 MB flash). No PSRAM needed.
 - USB **data** cable (charge-only cables never get a COM port).
-- Windows: vendor USB-UART driver (this project was used with a Silicon Labs **CP210x** on COM3).
+- USB-UART driver for your DevKit (Silicon Labs **CP210x**, CH340, and FTDI are common). On Windows the port shows up as `COMx`.
 
 ## Arduino IDE
 
@@ -30,7 +30,7 @@ arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=huge_app firmware/0
 arduino-cli upload  --fqbn esp32:esp32:esp32:PartitionScheme=huge_app -p COM3 firmware/02_TinyLM
 ```
 
-Change `COM3` to your port.
+Change `COM3` to your port (`/dev/ttyUSB0` or `/dev/ttyACM0` on Linux, `/dev/cu.usbserial-*` on macOS).
 
 ## Prove the USB stack first (optional)
 

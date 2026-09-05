@@ -12,7 +12,9 @@ character → one-hot (pick a column of Wxh)
          → next character
 ```
 
-This repo is the lab notebook from a three-part series: a **3,006**-parameter toy that continues `the rock`, a look **inside softmax** (`z` and `P`), then a **1,000,977**-parameter rocket Q&A model that still predicts **one letter at a time**.
+The GitHub name says SLM. The model is a **1M-parameter char-RNN**, not a transformer.
+
+It grew in three steps: a **3,006**-parameter toy that continues `the rock`, a look **inside softmax** (`z` and `P`), then the **1,000,977**-parameter rocket Q&A model shipped here. That last model still predicts **one letter at a time**. The 3k trainer is not in this tree.
 
 ## What it is / is not
 
@@ -20,7 +22,7 @@ This repo is the lab notebook from a three-part series: a **3,006**-parameter to
 | --- | --- |
 | A vanilla tanh RNN you can read in one `.ino` | A transformer or LLM |
 | Next-character sampling (temperature 0.6 by default) | A chatbot that “understands” questions |
-| int8 weights in flash + one scale per matrix | Training on the microcontroller |
+| int8 weights in flash + one scale per tensor | Training on the microcontroller |
 | Exact string gravity: `you: what is the f-1` works | `what is f1` meaning the same thing |
 
 Almost all of the 1M weights are **hidden → hidden**: `956 × 956 = 913,936` connections.
@@ -40,9 +42,10 @@ Almost all of the 1M weights are **hidden → hidden**: `956 × 956 = 913,936` c
 ```
 docs/                  Flash, train, and demo prompts
 firmware/
-  01_BlinkTest/        Serial hello — prove the board
+  01_BlinkTest/        Serial hello (no LED) — prove the board
   02_TinyLM/           RNN inference + generated weights header
 train/                 Corpus, train, export, PC generate
+CONTRIBUTING.md        How to change this without turning it into an LLM
 LICENSE                MIT
 ```
 
@@ -59,6 +62,8 @@ Hardware: ESP32-WROOM-32 DevKit, **4 MB flash**, USB **data** cable. No PSRAM re
 4. **Tools → Port → COMx**
 5. Open [`firmware/02_TinyLM/02_TinyLM.ino`](firmware/02_TinyLM/02_TinyLM.ino) and Upload.
 6. Serial Monitor **115200**. Close any other program using the port first.
+
+After reset, wait for `params=1000977  hidden=956  vocab=45`. The chip then generates `you: what does the rocket do` on its own. That is the boot demo, not a hang.
 
 If upload fails: hold **BOOT**, tap **EN**, release **BOOT**, upload again.
 
@@ -79,26 +84,28 @@ On the chip: `/why` toggles top-5 `z` / `P`. `/temp 0.2` is stabler. `/n 0` is u
 
 ## Quick start — PC (no board)
 
-```powershell
+```text
 cd train
 python -m pip install -r requirements.txt
 python generate.py --prompt "you: what is the f-1"
 ```
 
-Needs `train/checkpoints/rnn.npz` (gitignored). Train first if it is missing — [docs/TRAIN.md](docs/TRAIN.md).
+Needs Python **3.9+** and `train/checkpoints/rnn.npz` (gitignored, not in the clone). Train first if it is missing — [docs/TRAIN.md](docs/TRAIN.md). Clone-and-flash does **not** need this file.
 
 ## Train your own, then export
 
-```powershell
+```text
 cd train
-python build_chat_corpus.py --skip-kaggle
+python build_chat_corpus.py
 python train.py
 python export.py
 ```
 
+Default corpus is the hand-written facts in `build_chat_corpus.py`. That is what the shipped weights were trained on — not Kaggle or other third-party dumps.
+
 `export.py` overwrites `firmware/02_TinyLM/model_weights.h`. Then flash with **Huge APP**.
 
-The 3,006-parameter toy used [`train/corpus.txt`](train/corpus.txt) and `HIDDEN_SIZE=32`. The shipped firmware is the 1M rocket model.
+The 3,006-parameter toy used [`train/corpus.txt`](train/corpus.txt) and `HIDDEN_SIZE=32`. Recreating it takes extra work (`docs/TRAIN.md`). The shipped firmware is the 1M rocket model.
 
 ## License
 
